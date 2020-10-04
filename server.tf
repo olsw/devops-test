@@ -83,10 +83,15 @@ resource "aws_elb" "app-servers-elb" {
         interval            = 30
     }
 
-    subnets   = [aws_subnet.devops-subnet-public.id]
-    instances = aws_instance.app-servers.*.id
+    subnets         = [aws_subnet.devops-subnet-public.id]
+    instances       = aws_instance.app-servers.*.id
+    security_groups = [aws_security_group.devops-access.id]
 }
 
 output "instance_dns" {
     value = aws_instance.app-servers.*.public_dns
+}
+
+output "load-balancer-address" {
+    value = aws_elb.app-servers-elb.dns_name
 }
