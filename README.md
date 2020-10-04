@@ -1,3 +1,5 @@
+![CI](https://github.com/olsw/devops-test/workflows/NodeJS%20CI/badge.svg)
+
 # DevOps Engineer - Technical Test	
 We think infrastructure is best represented as code, and provisioning of resources should be automated as much as possible.	
 
