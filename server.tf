@@ -21,6 +21,7 @@ data "aws_ami" "ubuntu-latest" {
 }
 
 resource "aws_instance" "app-servers" {
+    //Create two application servers
     ami                    = data.aws_ami.ubuntu-latest.id
     count                  = 2
     instance_type          = "t2.micro"
@@ -28,6 +29,23 @@ resource "aws_instance" "app-servers" {
 
     subnet_id              = aws_subnet.devops-subnet-public.id
     vpc_security_group_ids = [aws_security_group.devops-access.id]
+
+    // Install docker, docker-compose and aws-cli using the best prescribed methods
+    // Optionally could bake this into a base image
+    connection {
+        type        = "ssh"
+        host        = self.public_ip
+        user        = "ubuntu"
+        private_key = file(var.ssh_private_key)
+    }
+
+    provisioner "file" {
+        // Due to a bug with terraform (https://github.com/hashicorp/terraform/issues/16330)
+        // it is easier to copy the whole directory rather than the single credentials file we need
+        source      = var.aws_credentials_directory
+        destination = "/home/ubuntu/.aws"
+
+    }
 
     provisioner "remote-exec" {
         // Install docker and docker-compose on the boxes
@@ -41,18 +59,15 @@ resource "aws_instance" "app-servers" {
             "sudo apt-get update",
             "sudo apt install -y docker-ce",
             "sudo curl -L \"https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)\" -o /usr/local/bin/docker-compose",
-            "sudo chmod +x /usr/local/bin/docker-compose"
+            "sudo chmod +x /usr/local/bin/docker-compose",
+            "sudo apt install -y awscli",
+            "aws ecr get-login-password --region eu-west-1 | sudo docker login --username AWS --password-stdin 343116501882.dkr.ecr.eu-west-1.amazonaws.com"
         ]
-        connection {
-            type        = "ssh"
-            host        = self.public_ip
-            user        = "ubuntu"
-            private_key = file(var.ssh_private_key)
-        }
     }
 }
 
 resource "aws_elb" "app-servers-elb" {
+    // Create the load balancer for the two app servers
     listener {
         instance_port     = 3000
         instance_protocol = "http"
