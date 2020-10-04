@@ -45,7 +45,7 @@ resource "aws_security_group" "devops-access" {
         from_port   = 22
         to_port     = 22
         protocol    = "tcp"
-        cidr_blocks = [var.MY_IP]
+        cidr_blocks = ["0.0.0.0/0"]
     }
 
     ingress {
