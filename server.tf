@@ -88,5 +88,5 @@ resource "aws_elb" "app-servers-elb" {
 }
 
 output "instance_ids" {
-    value = aws_instance.app-servers.*.id
+    value = aws_instance.app-servers.*.public_ip
 }
