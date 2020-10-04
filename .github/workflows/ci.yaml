@@ -62,7 +62,7 @@ jobs:
         ECR_REPOSITORY: ${{ steps.repo-name.outputs.github_repo }}
         IMAGE_TAG: ${{ steps.bump_tag.outputs.new_tag }}
       with:
-        host: "ec2-34-247-70-48.eu-west-1.compute.amazonaws.com"
+        host: "ec2-34-247-70-48.eu-west-1.compute.amazonaws.com","ec2-34-242-109-93.eu-west-1.compute.amazonaws.com"
         username: ubuntu
         key: ${{ secrets.PRIVATE_KEY }}
         envs: ECR_REGISTRY,ECR_REPOSITORY,IMAGE_TAG
