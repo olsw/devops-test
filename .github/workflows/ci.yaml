@@ -65,7 +65,8 @@ jobs:
         host: ${{ secrets.INSTANCE_IPS }}
         username: ubuntu
         key: ${{ secrets.PRIVATE_KEY }}
-      script: |
+        envs: ECR_REGISTRY,ECR_REPOSITORY,IMAGE_TAG
+        script: |
         sudo docker stop devops-test
         sudo docker run -d -p 3000:3000 --name devops-test $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
