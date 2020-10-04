@@ -87,6 +87,6 @@ resource "aws_elb" "app-servers-elb" {
     instances = aws_instance.app-servers.*.id
 }
 
-output "instance_ids" {
-    value = aws_instance.app-servers.*.public_ip
+output "instance_dns" {
+    value = aws_instance.app-servers.*.public_dns
 }
